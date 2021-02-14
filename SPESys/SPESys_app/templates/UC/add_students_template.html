@@ -1,0 +1,123 @@
+<!----------------------------------------------------------
+Admin Module : add_students_template.html
+------------------------------------------------------------>
+{% extends 'UC/base_template.html'%}
+{% block page_title %}
+   &nbsp;&nbsp;Manage Students
+{% endblock page_title %}
+{% block main_content %}
+
+<style media="screen">
+  .select2-container .select2-choice, .select2-result-label {
+  font-size: 1.5em;
+  height: 41px;
+  overflow: auto;
+
+</style>
+
+<!----------- Additional JS function for autocomplete.  --------------------->
+<script type="text/javascript">
+  $(document).ready(function(){
+    // $('#team_id').select2({
+    //         // minimumInputLength: 1,
+    //
+    //         // placeholder: "Select team",
+    //
+    //         multiple: false,
+    //         ajax: {
+    //             url: '/team_autocomplete',
+    //             dataType: 'json'
+    //         },
+    //     });
+  })
+</script>
+<!------------------------- End of JS  --------------------------------------->
+
+<!------------------------- Main Content  ------------------------------------>
+
+    <section class="content" xmlns:background-color="http://www.w3.org/1999/xhtml">
+        <div class="container-fluid">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <!------------------------------------------------------------
+                     Python callable function add_csv takes a request as arguement.
+                     ------------------------------------------------------------->
+                    <form action="/add_csv/" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="card-header">
+                            <h5>Upload csv</h5>
+                        </div>
+                        <div class="card-footer">
+                            <div class="form-group">
+                                <input accept=".csv" type="file"  name='csv_file' id="customFile">
+                                <label class="custom-file-label" for="customFile">Choose file</label>
+                            </div>
+                        </div>
+                        <div class ="card-footer">
+                            <button type="submit" class="btn btn-primary  btn-xl"  >Submit</button>
+                        </div>
+                    </form>
+                </div>
+                <p style="font-size:1.2em">Or:</p>
+            </div>
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class = "form-group">
+                        {%if messages%}
+                        {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        <div class ="alert alert-danger" style ="margin-top:10px">{{ message }} </div>
+                        {% endif %}
+                        {% if message.tags == 'success' %}
+                        <div class="alert alert-success" style="margin-top:10px">{{message}}</div>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                    <form role="form" action="/add_students_save" method="post">
+                        <div class="card-header">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" class="form-control" placeholder="Email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" class="form-control" placeholder="Password" name="password" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Password Confirmation</label>
+                                <input type="password" class="form-control" placeholder="Password" name="password2" required>
+                            </div>
+                        </div>
+                        {% csrf_token %}
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Student ID</label>
+                                <input required type="text" class="form-control" placeholder="Student ID" name="student_id">
+                            </div>
+                            <div>
+                                <label>Title</label>
+                                <input required type="text" class="form-control" placeholder="Title" name="title">
+                            </div>
+                            <div class="form-group">
+                                <label>Surname</label>
+                                <input required type="text" class="form-control" placeholder="Student ID" name="surname">
+                            </div>
+                            <div class="form-group">
+                                <label>Given Name</label>
+                                <input required type="text" class="form-control" placeholder="Given Name" name="given_name">
+                            </div>
+                            <div class="form-group">
+                                <label>Teach Period</label>
+                                <input required type="text" class="form-control" placeholder="Teach Period" name="teach_period">
+                            </div>
+                            <div class ="card-footer">
+                                <button type="submit" class="btn btn-primary  btn-xl"  >Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endblock main_content %}

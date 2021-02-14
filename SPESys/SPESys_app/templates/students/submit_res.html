@@ -1,0 +1,141 @@
+<!----------------------------------------------------------
+Student Module : student_response.html
+------------------------------------------------------------>
+{% extends 'UC/base_template.html'%}
+{% block page_title %}
+   &nbsp;&nbsp;&nbsp;&nbsp;Manage Students
+{% endblock page_title %}
+{% block main_content %}
+
+{% load tags %}
+<style media="screen">
+  .select2-container .select2-choice, .select2-result-label {
+      font-size: 1.5em;
+      height: 41px;
+      overflow: auto;
+    },
+</style>
+<style>
+  .row{
+    height : 90px
+  }
+  .ques{
+     font-size:1.2em;
+  }
+
+</style>
+
+<script>
+  $(document).ready(()=>{
+
+    $('#untoast').toast({delay:1000});
+    $('#succtoast').toast({delay:1000});
+    $(".res_form").submit(function () {
+      let res = {}
+      $(this).find('.response').map(function () {
+        let rated_to = $(this).attr("rated_to")
+        let ques = $(this).attr('question')
+        if(res.hasOwnProperty($(this).attr("rated_to"))){
+          res[rated_to][ques] = $(this).val()
+        }
+        else {
+
+          res[rated_to] = {}
+          res[rated_to][ques] = $(this).val()
+        }
+      });
+      console.log(res);
+      $.ajax({
+        type:"POST",url:"/get_form/{{pk}}/",
+        data:{csrfmiddlewaretoken:"{{csrf_token}}",data:JSON.stringify(res)},
+        success:()=>{
+          $('#succtoast').toast('show');
+        },
+        error:()=>{
+          $('#untoast').toast('show');
+        }
+      })
+
+      return false
+    })
+
+
+    $(".response").on('load',function(){
+
+    })
+
+    let submitted = JSON.parse("{{form.submited_responses}}".replace(/&#x27;/g,"\"").replace(/None/g,null));
+
+    Object.keys(submitted).map((item,i)=>{
+
+      Object.keys(submitted[item]['{{request.user.username}}']).map((ques,i)=>{
+        $(`tr[rated_to='${item}']`).find(`select[question='${ques}']`).find(`option[value='${submitted[item]['{{request.user.username}}'][ques]}']`).prop('selected','selected')
+      })
+    })
+  })
+
+</script>
+<section class="content" xmlns:background-color="http://www.w3.org/1999/xhtml">
+  <div class="container-md">
+    <form class="res_form">
+      {% csrf_token %}
+      <table class="table">
+        <thead>
+        <tr>
+          <th> Questions </th>
+          {% for ques in questions %}
+          <th scope="col" style="text-align:center">{{ ques }}</th>
+          {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <th> Students </th>
+        </tr>
+        {% for student in form.team.students.all %}
+        <tr rated_to="{{ student.admin.username }}">
+          <th scope="row">{{ student.admin.username }}</th>
+          {% for opt in questions %}
+          <td>
+
+            <div class="form-group mx-auto">
+              <select rated_to="{{student.admin.username}}" class="custom-select response" question='{{opt}}'>
+                <option value="1">1 (Bad)</option>
+                <option value="2">2 (Below average)</option>
+                <option value="3">3 (Average)</option>
+                <option value="4">4 (Above average)</option>
+                <option value="5">5 (Great)</option>
+              </select>
+            </div>
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="d-flex mt-5">
+        <input type="submit" class='btn btn-success ml-auto' value="Mark your respnse">
+      </div>
+    </form>
+  </div>
+  <div class="toast" id='succtoast' role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+    </div>
+    <div class="toast-body">
+      Succefully submitted
+    </div>
+  </div>
+  <div class="toast" id='untoast' role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+    </div>
+    <div class="toast-body">
+      Unsuccessful
+    </div>
+  </div>
+</section>
+
+
+
+
+{% endblock main_content %}

@@ -1,0 +1,94 @@
+{% extends 'UC/base_template.html'%}
+{% block page_title %}
+   &nbsp;&nbsp;View Responses
+{% endblock page_title %}
+{% block main_content %}
+
+{% load tags %}
+<style media="screen">
+  table{width:100%;margin-bottom:1rem;color:#212529}
+  table td,table th{padding:.75rem;vertical-align:top;border-top:1px solid #dee2e6}
+  table thead th{vertical-align:bottom;border-bottom:2px solid #dee2e6}
+  table tbody+tbody{border-top:2px solid #dee2e6}
+  table thead th{color:#fff;background-color:#343a40;border-color:#454d55}
+  table tbody tr th{color:#fff;background-color:#343a40;border-color:#454d55}
+  table tbody tr:nth-of-type(odd){background-color:rgba(0,0,0,.05)}
+  .dis-4{font-size:1.5rem;font-weight:200;line-height:1.2}
+
+</style>
+<section class="content" xmlns:background-color="http://www.w3.org/1999/xhtml">
+      <section class="content" xmlns:background-color="http://www.w3.org/1999/xhtml">
+      <div class="container-fluid">
+        <div class="col-md-12">
+         <div class="card card-primary">
+  <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    {% for i in form %}
+    <li class="nav-item">
+      {% if forloop.counter == 1 %}
+        <a class="nav-link active" id="{{i.form_id}}-tab" data-toggle="pill" href="#{{i.form_id}}" role="tab">{{i.form_id}}</a>
+      {% else %}
+        <a class="nav-link" id="{{i.form_id}}-tab" data-toggle="pill" href="#{{i.form_id}}" role="tab">{{i.form_id}}</a>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  <div class="tab-content" id="pills-tabContent">
+    {% for i in form %}
+    <!-- <li class="nav-item"> -->
+      {% if forloop.counter == 1 %}
+        <div class="tab-pane fade show active" id="{{i.form_id}}" role="tabpanel" aria-labelledby="pills-home-tab">
+          {% for stu,key in i.submited_responses.items %}
+            <div class="d-flex flex-column">
+              <p class="mr-auto dis-4">Response for student: <strong>{{ stu }}</strong></p>
+              <div class="">
+                {% autoescape off %}
+                    {{ key|get_csv:False }}
+                {% endautoescape %}
+              </div>
+            </div>
+          {% endfor %}
+          <div>
+            <div class="d-flex">
+              <p class="mr-auto dis-4">Final Individual Scores: </p>
+              <a class="ml-auto mr-4 btn btn-primary my-2" role="button" href="{% url 'mail_responses' i.pk%}">Email Results</a>
+
+            </div>
+
+            {% autoescape off %}
+                {{ i.get_average_responses|get_csv:True }}
+            {% endautoescape %}
+          </div>
+        </div>
+      {% else %}
+        <div class="tab-pane fade show" id="{{i.form_id}}" role="tabpanel" aria-labelledby="pills-home-tab">
+          {% for stu,key in i.submited_responses.items %}
+            <div class="d-flex flex-column">
+              <p class="mr-auto dis-4">Response for student: <strong>{{ stu }}</strong></p>
+              <div class="">
+                {% autoescape off %}
+                    {{ key|get_csv:False }}
+                {% endautoescape %}
+              </div>
+            </div>
+          {% endfor %}
+          <div>
+            <div class="d-flex">
+              <p class="mr-auto dis-4">Final Individual Scores: </p>
+              <a class="ml-auto mr-4 btn btn-primary my-2" role="button" href="{% url 'mail_responses' i.pk %}">Email Results</a>
+            </div>
+            {% autoescape off %}
+                {{ i.get_average_responses|get_csv:True }}
+            {% endautoescape %}
+          </div>
+        </div>
+      {% endif %}
+    <!-- </li> -->
+    {% endfor %}
+    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">...</div>
+  </div>
+
+
+{% for i,j in form.get_average_responses.items %}
+{% endfor %}
+</section>
+{% endblock %}

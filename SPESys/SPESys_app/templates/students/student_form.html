@@ -1,0 +1,68 @@
+<!----------------------------------------------------------
+Student Module : student_form.html
+------------------------------------------------------------>
+
+{% extends 'UC/base_template.html'%}
+{% block page_title %}
+   &nbsp;&nbsp;&nbsp;&nbsp;My Forms
+{% endblock page_title %}
+{% block main_content %}
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+
+<style media="screen">
+  .select2-container .select2-choice, .select2-result-label {
+  font-size: 1.5em;
+  height: 41px;
+  overflow: auto;
+}
+</style>
+
+<section class="content" xmlns:background-color="http://www.w3.org/1999/xhtml">
+    <div class="row">
+        <div class="container-fluid">
+            <div class="col-md-12">
+                <div class="card card-secondary>
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="card">
+                    <div class="card-header">
+                        <p>
+                            <b>Please note: </b>
+                        <p>Everything that you put into this form will be kept strictly confidential.</p>
+                        <b>The scales are from 1 to 5.  Assess these as:</b>
+                        <ul>
+                            <li>1 = Very poor, or even obstructive, contribution to the project process</li>
+                            <li>2 = Poor contribution to the project process</li>
+                            <li>3 = Acceptable contribution to the project process</li>
+                            <li>4 = Good contribution to the project process</li>
+                            <li>5 = Excellent contribution to the project process</li>
+                        </ul>
+                        </p>
+                        {% for i in request.user.students.team_set.all %}
+                        <div class="card" style="width:100%">
+                            <div class="card-body">
+                                <div class="card-header d-flex">
+                                    <h5>{{i.team_id}}</h5>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    {% for form in i.form_set.all %}
+                                    <li class="list-group-item">
+                                        <div class="d-flex">
+                                            <a href="{% url 'get_form' form.pk %}">{{form.form_name}}</a>
+                                            <div class="d-flex flex-column ml-auto" style="width:25%">
+                                                <small><strong>Created on: </strong>{{ form.created_on }}</small>
+                                                <small><strong>Submit before: </strong>{{ form.expiry_date }}</small>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+</section>
+{% endblock main_content %}

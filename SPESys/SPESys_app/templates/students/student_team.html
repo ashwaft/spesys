@@ -1,0 +1,30 @@
+<!----------------------------------------------------------
+Student Module : student_team.html
+------------------------------------------------------------>
+
+{% extends 'UC/base_template.html'%}
+{% block page_title %}
+   &nbsp;&nbsp;&nbsp;&nbsp;My Team
+{% endblock page_title %}
+{% block main_content %}
+
+<div class="container-md">
+  Your team:<br><br>
+  {% for i in team %}
+  <div class="card bg-info">
+      <p class="ml-4 card-title" style='font-size: 1.5em;font-weight:400'>{{i.team_id}}</p>
+      <div class="card-body">
+        <div class="d-flex">
+          Following students are in your team:
+        </div>
+        <ul class="list-group">
+          {% for stud in i.students.all %}
+            <li class="text-dark list-group-item">{{stud.given_name}}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

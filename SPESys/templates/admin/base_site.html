@@ -1,0 +1,20 @@
+{% extends "admin/base.html" %}
+
+{% block title %}MyPortfolio | Admin{% endblock %}
+
+{% block extrahead %}
+<script type="text/javascript">
+
+  document.addEventListener("DOMContentLoaded", function(){
+    var footer = document.getElementById("footer");
+    footer.innerHTML+="";
+  });
+</script>
+{% endblock %}
+{% block extrastyle %}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="/">Welcome <small style="font-weight:100">{{request.user}}</small></a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

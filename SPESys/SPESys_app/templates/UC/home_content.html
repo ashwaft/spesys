@@ -1,0 +1,40 @@
+<!----------------------------------------------------------
+Admin Module : home_content.html
+------------------------------------------------------------>
+
+{% extends 'UC/base_template.html'%}
+{% load static %}
+{% block page_title %}
+   &nbsp;&nbsp;Welcome to SPEsys 2.0!
+{% endblock page_title %}
+{% block main_content %}
+
+    <!------------------------- Main Content  ------------------------------------>
+    <section class="content" xmlns:background-color="http://www.w3.org/1999/xhtml">
+        <div class="container-fluid">
+            <div class="col-md-12">
+                <div class="card card-secondary>
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="card">
+                    <div class="card-header">
+                  Peer Evaluation is an important learning process for students that allows them to provide feedback to one another on their work. This encourages student's involvement in assessment and responsibility.<br>
+                  The SPEsys tool allows easy access and management so you and your students don't have to worry about the hassle of manually sending out tasks. Sending and collection of data has never been easier. <br>
+                  The system is being improved on and we welcome feedback and suggestions. Feel free to reach out to us here: <a href="mailto:">Email Us</a></> <br><br>
+
+                  <img src="{% static "dist/img/logo12.png" %}" alt="Logo" align="top"><br>
+                    <p> Current Features </p>
+                    <ul>
+                        <li><b>My profile: </b>View your personal details and reset your password</li>
+                        <li><b>Manage Students: </b>Upload student details and manage your students.</li>
+                        <li><b>Manage Teams: </b>Manually edit or add student(s) to a team.</li>
+                        <li><b>My Forms: </b>Manage and customize your evaluation forms.</li>
+                        <li><b>View Responses: </b>View evaluation responses or export CSV.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- /.content -->
+    {% endblock main_content %}

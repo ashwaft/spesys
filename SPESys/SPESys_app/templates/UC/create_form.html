@@ -1,0 +1,167 @@
+<!----------------------------------------------------------
+Admin Module : create_form.html
+------------------------------------------------------------>
+
+{% extends 'UC/base_template.html'%}
+{% block page_title %}
+   &nbsp;&nbsp;&nbsp;&nbsp;Manage Students
+{% endblock page_title %}
+{% block main_content %}
+
+<style media="screen">
+  .select2-container .select2-choice, .select2-result-label {
+  font-size: 1.5em;
+  height: 41px;
+  overflow: auto;
+}
+</style>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<section class="content" xmlns:background-color="http://www.w3.org/1999/xhtml">
+  <h5>Following students are in this team:</h5>
+  <ul class="list-group">
+    {% for i in team.students.all %}
+    <ol class="list-group">
+      <li class="list-group-item">Name: <strong>{{ i.given_name }}</strong></li>
+      <li class="list-group-item">Email: <strong>{{ i.admin.username }}</strong></li>
+    </ol>
+    {% endfor %}
+  </ul>
+
+  <div class="container mx-5 mt-5">
+    <div class="d-flex flex-column">
+      <div class="form-group">
+        <label for="form_name">Enter form name</label>
+        <input type="text" class="form-control" id='form_name' placeholder="Enter form name" value="{{form.form_name}}">
+      </div>
+      <div>
+        <button class="mr-auto btn btn-info" data-toggle="modal" data-target="#question_modal">+ Add questions</button>
+      </div>
+      <div class="mt-2">
+        <small class="text-muted">Students of this team will be able to rate on 0-5 scale</small>
+      </div>
+      <div class="row question_list" style='width:50%'>
+        {% for i in form.form.keys %}
+        <div class='col-12 bg-light m-2 d-flex' question='{{i}}'>
+          <span>Question: <strong>{{i}}</strong></span>
+          <button onclick='remove_final(this)' class='btn btn-danger btn-sm ml-auto'>Remove</button>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="custom-control mt-2 custom-checkbox">
+        {% if form.is_open %}
+        <input checked type="checkbox" name="is_open" class="custom-control-input" id="is_open" >
+        {% else %}
+        <input  type="checkbox" name="is_open" class="custom-control-input" id="is_open" >
+        {% endif %}
+        <label class="custom-control-label" for="is_open">Form is open to accept responses</label>
+      </div>
+      <div class="mt-2">
+        <button data-toggle="tooltip" title="Check above check box to make form open" class="mr-auto btn btn-primary" id="export_questions">Save above questions to form</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="question_modal"  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog"  role="document">
+    <div class="modal-content">
+      <form class="" id="question_form">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body form_body">
+          <div class="form-group">
+            <div class="d-flex my-1">
+              <label>Question</label>
+              <button class="ml-auto btn btn-danger btn-sm" type='button' onclick='remove(this)'>Remove</button>
+            </div>
+            <input type="text" required class="form-control question" name="question" placeholder="Type and press submit">
+          </div>
+      </div>
+        <div class="modal-footer d-flex">
+          <input type="submit" class="btn btn-info">
+          <button class="btn btn-outline-secondary ml-auto" name="button" id="add_question">+Add a question</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(()=>{
+
+    $('[data-toggle="tooltip"]').tooltip()
+    $("#question_form").submit(function(){
+      // let questions = []
+      $(this).find(".question").map((i,item)=>{
+        $(".question_list").append(
+          `
+          <div class='col-12 bg-light m-2 d-flex' question='${$(item).val()}'>
+            <span>Question: <strong>${$(item).val()}</strong></span>
+            <button onclick='remove_final(this)' class='btn btn-danger btn-sm ml-auto'>Remove</button>
+          </div>
+            `
+        )
+        if(i>0){
+          $(item).parent().remove()
+        }
+      })
+      // console.log(questions);
+      $("#question_modal").modal('hide')
+      $(this).trigger("reset")
+
+      return false;
+    })
+
+    $("#add_question").click(function () {
+      $(".form_body").append(`
+      <div class="form-group">
+        <div class="d-flex my-1">
+          <label>Question</label>
+          <button class="ml-auto btn btn-danger btn-sm" type='button' onclick='remove(this)'>Remove</button>
+        </div>
+        <input type="text" required class="form-control question" name="question" placeholder="Type and press submit">
+      </div>`)
+    })
+
+    $("#export_questions").click(function () {
+      let questions = []
+      $(".question_list").find(".col-12").map(function () {
+        questions.push($(this).attr("question"));
+      })
+      if(questions.length <1)
+      {
+        alert("No questions to export")
+      }
+      else{
+        $.ajax({
+          url:"{% url 'create_form' pk %}",type:"POST",
+          data:{"data":JSON.stringify({"questions":questions}),csrfmiddlewaretoken:"{{csrf_token}}","is_open":$("#is_open").prop("checked"),'name':$("#form_name").val()},
+          success:()=>{
+            alert("Successfully saved ")
+          }
+        })
+      }
+    })
+
+  })
+
+  function remove(ele) {
+    if($(".form_body").find(".form-group").length > 1){
+      $(ele).parent().parent().remove()
+    }
+    console.log("ok");
+    return false;
+  }
+
+  function remove_final(ele) {
+    $(ele).parent().remove()
+  }
+</script>
+{% endblock main_content %}

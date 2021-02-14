@@ -1,0 +1,106 @@
+<!----------------------------------------------------------
+Admin Module : add_form.html
+------------------------------------------------------------>
+
+{% extends 'UC/base_template.html'%}
+{% block page_title %}
+   &nbsp;&nbsp;&nbsp;&nbsp;Manage Forms
+{% endblock page_title %}
+{% block main_content %}
+<style media="screen">
+  .select2-container .select2-choice, .select2-result-label {
+  font-size: 1.5em;
+  height: 41px;
+  overflow: auto;
+}
+</style>
+
+<!----------- Additional JS function for label: datetimepicker --------------------->
+
+<script>
+  $(function () {
+    console.log(moment().format());
+    $("#datetimepicker").datetimepicker({
+      format: 'Y-MM-D HH:mm Z',
+      //format: 'Y/m/d',
+      defaultDate:moment()
+    });
+    console.log($("#datetimepicker"));
+    $("#delete_modal").on("show.bs.modal",function (event) {
+      let button = $(event.relatedTarget)
+      $(this).find("#delete_link").attr('href','/delete_form/'+$(button).attr('form_'))
+    })
+    // $('#add_form').submit(function (){
+    //   let exp = $(this).find('input[name="expiry_date"]').val()
+    //   $(this).find('input[name="expiry_date"]').val(moment(exp,'YYYY-MM-DD HH:MM').format());
+    // })
+  });
+</script>
+
+<!---------------------------- End of addition JS function -------------------------------->
+
+    <!---------------------------- Main Content  -------------------------------->
+    <section class="content" xmlns:background-color="http://www.w3.org/1999/xhtml">
+        <div class="container-fluid">
+          <div class="col-md-12">
+            <div class="card card-primary">
+
+              <form method="post" style="width:50%" id='add_form'>
+                {% csrf_token %}
+                <div class="form-group">
+                  <div class="container-fluid">
+                    <div class="col-md-12">
+                      <div class="card card-primary">
+                        <br><label>Select team:</label>
+                        <select id="select_team" required class="custom-select" name="team_id">
+                          {% for i in teams %}
+                          <option value="{{i}}">{{i}}</option>
+                          {% endfor %}
+                        </select>
+
+                      <label for="datetimepicker">Expiry date:</label>
+                      <div class="input-group date" id="datetimepicker" data-target-input="nearest">
+                        <input style="pointer-events: none" name='expiry_date' type="text" class="form-control datetimepicker-input" data-target="#datetimepicker"/>
+                        <div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker">
+                          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                      </div>
+                      <input type="submit" class="btn btn-primary mt-2" value="Create form">
+                    </div>
+                  </div>
+                </div>
+              </form>
+
+              <div class="container-md">
+                Your forms:<br><br>
+                {% for i in request.user.form_set.all %}
+                <div class="card">
+                  <div class="card-body">
+                    <div class="card-header d-flex">
+                      <h5><a href="{% url 'create_form' i.pk %}">{{i.form_name}}</a></h5>
+                      <a role="button" class="btn btn-danger ml-auto btn-sm" href="#" data-toggle='modal' data-target='#delete_modal' form_ = "{{i.pk}}">Delete</a>
+                    </div>
+                    <div class="card-footer">
+                      <a href="{% url 'see_responses' i.pk%}">See responses-></a>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              <div class="modal fade" tabindex="-1" role="dialog" id='delete_modal'>
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Do you want to delete this form and associated responses?</h5>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No</button>
+                      <a id="delete_link" role="button" class="btn btn-outline-danger" href="#">Yes</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+    </section>
+
+{% endblock main_content %}

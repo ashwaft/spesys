@@ -1,0 +1,71 @@
+<!----------------------------------------------------------
+Student Module : student_complaint.html
+------------------------------------------------------------>
+
+{% extends 'UC/base_template.html'%}
+{% block page_title %}
+   &nbsp;&nbsp;&nbsp;&nbsp;Submit Complaint
+{% endblock page_title %}
+{% block main_content %}
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+<style media="screen">
+  .select2-container .select2-choice, .select2-result-label {
+  font-size: 1.5em;
+  height: 41px;
+  overflow: auto;
+},
+</style>
+
+<section class=<div class="container-fluid">
+    <div class="container-fluid">
+        <div class="col-md-12">
+            <div class="card card-secondary>
+            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="card">
+                <div class="card-header">
+                <!-- <h4 class="mt-5">Click <a href="mailto:{{request.session.ADMIN_MAIL}}?subject=[Your subject]&body=[Complain in detail]"
+                     class="text-warning">here</a> to register a complain</h4> -->
+
+                    <p><b>Important</b>
+                    <p>Please do not abuse the form and only submit the complaint as a last resort.</p>
+                    <b>Guidelines</b>
+                    <ul>
+                        <li>Never assume that the other person will be reasonable (that they do what you would do under the circumstances)</li>
+                        <li>Do not assume that your adversary’s values are the same as your values would be if you were in their position</li>
+                        <li>Do research - Information is power. People will assume 'they know it all' but in fact may not.</li>
+                        <li>Ask questions of your adversary. Do not just state your position while not bothering on team member's veiwpoint.</li>
+                        <li>Use silence. Find out what they want and will offer.</li>
+                        <li>Mirror back tentative understandings and do not twist what someone has said to get your points across.</li>
+                    </ul>
+                    </p>
+                    <p> If all attempts at resolving conflicts has fail, you may use the following contact form to submit your official complaint.</p>
+                    <form class="" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="">Name</label>
+                            <input type="text" name='name' placeholder="Name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Team</label>
+                            <select class="form-control" name="team">
+                                {% for i in request.user.students.team_set.all %}
+                                <option value="{{i.team_id}}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Complain</label>
+                            <textarea type="text" name='complain' rows="10" placeholder="Complain in detail" class="form-control"></textarea>
+                        </div>
+                        <input type="submit" class="btn btn-primary">
+                    </form>
+                </div>
+            </div>
+        </div>
+</section>
+
+{% endblock main_content %}

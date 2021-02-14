@@ -1,0 +1,38 @@
+{% extends 'UC/base_template.html'%}
+{% load static %}
+{% block page_title %}
+   &nbsp;&nbsp;My Profile
+{% endblock page_title %}
+{% block main_content %}
+
+<!---------------------------- Main Content  -------------------------------->
+<section class="content" xmlns:background-color="http://www.w3.org/1999/xhtml">
+    <div class="container-fluid">
+        <div class="col-md-12">
+            <div class="card card-secondary>
+            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="card">
+                <div class="card-header">
+                    <form action="/get_profile/" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        {% if field.auto_id == 'id_password'%}
+                        <a href="{% url 'password_change'%}"> Reset my Password <br></a>
+                        {% else %}
+                        <div class="form-group">
+                            {{field.label_tag}}
+                            {{field}}
+                            <small class="text-muted text-primary">{{field.help_text}}</small>
+                            <small class="text-muted text-danger">{{field.errors}}</small>
+                        </div><br>
+                        {% endif %}
+                        {% endfor %}
+                        <br>
+                        <input type="submit" class='btn btn-primary' value="Update">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock main_content %}
